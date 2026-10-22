@@ -1,0 +1,143 @@
+{
+  "dataset": {
+    "total_samples": 4269,
+    "features_count": 11,
+    "train_samples": 3415,
+    "test_samples": 854,
+    "target_classes": [
+      "Rejected (0)",
+      "Approved (1)"
+    ],
+    "class_distribution": {
+      "Approved": 2656,
+      "Rejected": 1613
+    }
+  },
+  "model_metadata": {
+    "model_type": "RandomForestClassifier",
+    "n_estimators": 150,
+    "max_depth": 12,
+    "preprocessing": "StandardScaler (numeric) + OneHotEncoder (categorical)",
+    "pipeline_type": "scikit-learn Pipeline with ColumnTransformer"
+  },
+  "test_metrics": {
+    "accuracy": 0.9824355971896955,
+    "precision": 0.9813432835820896,
+    "recall": 0.9905838041431262,
+    "f1_score": 0.985941893158388,
+    "roc_auc": 0.998868890404809,
+    "specificity": 0.9690402476780186
+  },
+  "confusion_matrix": {
+    "matrix": [
+      [
+        313,
+        10
+      ],
+      [
+        5,
+        526
+      ]
+    ],
+    "labels": [
+      "Rejected",
+      "Approved"
+    ],
+    "true_negatives": 313,
+    "false_positives": 10,
+    "false_negatives": 5,
+    "true_positives": 526
+  },
+  "cross_validation_5fold": {
+    "accuracy_scores": [
+      0.9809663250366032,
+      0.9780380673499268,
+      0.9838945827232797,
+      0.9809663250366032,
+      0.9809663250366032
+    ],
+    "mean_accuracy": 0.9809663250366032,
+    "std_accuracy": 0.001851992773158641,
+    "mean_f1": 0.9847655993436855,
+    "std_f1": 0.0014965201121838214,
+    "mean_roc_auc": 0.9965873233014136
+  },
+  "feature_importances": [
+    {
+      "feature": "cibil_score",
+      "importance": 0.8301099984368844
+    },
+    {
+      "feature": "loan_term",
+      "importance": 0.06129079723509341
+    },
+    {
+      "feature": "loan_amount",
+      "importance": 0.02875859329350184
+    },
+    {
+      "feature": "income_annum",
+      "importance": 0.015948191956651116
+    },
+    {
+      "feature": "luxury_assets_value",
+      "importance": 0.015524123523793882
+    },
+    {
+      "feature": "residential_assets_value",
+      "importance": 0.014260376149817715
+    },
+    {
+      "feature": "commercial_assets_value",
+      "importance": 0.013528877485597208
+    },
+    {
+      "feature": "bank_asset_value",
+      "importance": 0.01146583929135254
+    },
+    {
+      "feature": "no_of_dependents",
+      "importance": 0.005919565879615463
+    },
+    {
+      "feature": "education_Not Graduate",
+      "importance": 0.0016017574325565343
+    },
+    {
+      "feature": "self_employed_Yes",
+      "importance": 0.0015918793151360145
+    }
+  ],
+  "model_comparison": {
+    "Logistic Regression": {
+      "cv_accuracy_mean": 0.9142020497803806,
+      "cv_accuracy_std": 0.01631961908414968,
+      "cv_f1_mean": 0.9312728981087129,
+      "test_accuracy": 0.914519906323185,
+      "test_precision": 0.9209558823529411,
+      "test_recall": 0.943502824858757,
+      "test_f1": 0.932093023255814,
+      "test_roc_auc": 0.9725501857002093
+    },
+    "Decision Tree": {
+      "cv_accuracy_mean": 0.9689604685212299,
+      "cv_accuracy_std": 0.00682981188268849,
+      "cv_f1_mean": 0.975134946486763,
+      "test_accuracy": 0.9800936768149883,
+      "test_precision": 0.974169741697417,
+      "test_recall": 0.9943502824858758,
+      "test_f1": 0.9841565703634669,
+      "test_roc_auc": 0.9873595587506487
+    },
+    "Random Forest": {
+      "cv_accuracy_mean": 0.9809663250366032,
+      "cv_accuracy_std": 0.001851992773158641,
+      "cv_f1_mean": 0.9847655993436855,
+      "test_accuracy": 0.9824355971896955,
+      "test_precision": 0.9813432835820896,
+      "test_recall": 0.9905838041431262,
+      "test_f1": 0.985941893158388,
+      "test_roc_auc": 0.998868890404809
+    }
+  }
+}

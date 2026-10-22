@@ -1,0 +1,173 @@
+import React, { useEffect, useState } from 'react';
+import { 
+  BarChart3, 
+  Calculator, 
+  Cpu, 
+  Database, 
+  Info, 
+  ShieldCheck, 
+  Activity,
+  Layers
+} from 'lucide-react';
+import api from '../services/api';
+
+export default function Navbar({ activeTab, setActiveTab }) {
+  const [apiStatus, setApiStatus] = useState('checking');
+
+  useEffect(() => {
+    let isMounted = true;
+    api.getHealth()
+      .then(() => {
+        if (isMounted) setApiStatus('online');
+      })
+      .catch(() => {
+        if (isMounted) setApiStatus('offline');
+      });
+
+    const interval = setInterval(() => {
+      api.getHealth()
+        .then(() => isMounted && setApiStatus('online'))
+        .catch(() => isMounted && setApiStatus('offline'));
+    }, 30000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+    { id: 'predict', label: 'Predict Loan', icon: Calculator },
+    { id: 'model', label: 'Model Results', icon: Cpu },
+    { id: 'warehouse', label: 'Warehouse Analytics', icon: Database },
+    { id: 'about', label: 'About & KDD', icon: Info },
+  ];
+
+  return (
+    <header style={{
+      borderBottom: '1px solid var(--border-subtle)',
+      background: 'rgba(11, 15, 25, 0.85)',
+      backdropFilter: 'blur(16px)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      width: '100%'
+    }}>
+      <div style={{
+        maxWidth: '1320px',
+        margin: '0 auto',
+        padding: '0 20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: '68px'
+      }}>
+        {/* Brand identity */}
+        <div 
+          onClick={() => setActiveTab('dashboard')}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+        >
+          <div style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(99, 102, 241, 0.35)'
+          }}>
+            <Layers size={20} color="#ffffff" />
+          </div>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '1.08rem', letterSpacing: '-0.02em', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              Loan Intelligence
+              <span style={{
+                fontSize: '0.68rem',
+                background: 'rgba(99, 102, 241, 0.15)',
+                color: '#818cf8',
+                padding: '2px 7px',
+                borderRadius: '6px',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                fontWeight: 600
+              }}>
+                ACADEMIC DEMO
+              </span>
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+              Approval Prediction & Warehouse Analytics
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Tabs */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                style={{
+                  background: isActive ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                  color: isActive ? '#a5b4fc' : 'var(--text-muted)',
+                  border: isActive ? '1px solid rgba(99, 102, 241, 0.35)' : '1px solid transparent',
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  fontSize: '0.88rem',
+                  fontWeight: isActive ? 600 : 500,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                <Icon size={16} color={isActive ? '#818cf8' : 'currentColor'} />
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* System Badges */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '0.78rem',
+            padding: '5px 12px',
+            borderRadius: '9999px',
+            background: apiStatus === 'online' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+            border: `1px solid ${apiStatus === 'online' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(244, 63, 94, 0.25)'}`,
+            color: apiStatus === 'online' ? '#34d399' : '#fb7185'
+          }}>
+            <span style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              background: apiStatus === 'online' ? '#10b981' : '#f43f5e',
+              boxShadow: apiStatus === 'online' ? '0 0 8px #10b981' : '0 0 8px #f43f5e'
+            }} />
+            API: {apiStatus === 'online' ? 'Connected' : 'Offline'}
+          </div>
+
+          <div style={{
+            fontSize: '0.78rem',
+            padding: '5px 12px',
+            borderRadius: '9999px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--text-muted)',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            4,269 Rows
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
