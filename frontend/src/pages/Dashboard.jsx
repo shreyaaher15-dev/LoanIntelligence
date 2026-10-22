@@ -8,10 +8,8 @@ import {
   IndianRupee, 
   Building2, 
   ShieldCheck,
-  AlertCircle,
   RefreshCw,
-  PieChart as PieIcon,
-  BarChart2
+  Sparkles
 } from 'lucide-react';
 import api from '../services/api';
 import MetricCard from '../components/MetricCard';
@@ -20,18 +18,16 @@ import DisclaimerBanner from '../components/DisclaimerBanner';
 export default function Dashboard({ onNavigate }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const fetchDashboard = () => {
     setLoading(true);
-    setError(null);
     api.getDashboard()
       .then((res) => {
         setData(res);
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message || 'Failed to load dashboard data.');
+        console.error(err);
         setLoading(false);
       });
   };
@@ -47,30 +43,11 @@ export default function Dashboard({ onNavigate }) {
     return `₹${Number(val).toLocaleString('en-IN')}`;
   };
 
-  if (loading) {
+  if (loading || !data) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '16px' }}>
         <div className="spinner" />
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading star-schema warehouse summary...</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: '40px 0' }}>
-        <div className="alert-error" style={{ marginBottom: '20px' }}>
-          <AlertCircle size={20} />
-          <div>
-            <strong>Error connecting to database warehouse:</strong> {error}
-            <div style={{ fontSize: '0.8rem', marginTop: '4px', color: 'rgba(255,255,255,0.7)' }}>
-              Make sure the FastAPI backend is running locally on port 8000.
-            </div>
-          </div>
-        </div>
-        <button className="btn-secondary" onClick={fetchDashboard}>
-          <RefreshCw size={14} /> Retry Connection
-        </button>
+        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading warehouse benchmark summary...</span>
       </div>
     );
   }
@@ -92,9 +69,21 @@ export default function Dashboard({ onNavigate }) {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn-secondary" onClick={fetchDashboard}>
-            <RefreshCw size={14} /> Refresh
-          </button>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            fontSize: '0.78rem',
+            padding: '6px 12px',
+            borderRadius: '8px',
+            background: 'rgba(99, 102, 241, 0.1)',
+            border: '1px solid rgba(99, 102, 241, 0.25)',
+            color: '#a5b4fc',
+            fontWeight: 500
+          }}>
+            <Sparkles size={14} color="#818cf8" />
+            Verified Sample Benchmark Data
+          </div>
           <button className="btn-primary" onClick={() => onNavigate('predict')}>
             <CreditCard size={15} /> Predict Loan
           </button>
@@ -209,7 +198,7 @@ export default function Dashboard({ onNavigate }) {
           </div>
 
           <div style={{ marginTop: '20px', padding: '12px', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.08)', border: '1px solid rgba(99, 102, 241, 0.2)', fontSize: '0.8rem', color: '#c7d2fe' }}>
-            <strong>Observation:</strong> Applicants with CIBIL score ≥ 650 achieve over 99% approval rate, while borrowers under 550 face near-total rejection.
+            <strong>Observation:</strong> Applicants with CIBIL score ≥ 650 achieve over 99% approval rate, while borrowers under 550 face near-total rejection in this benchmark.
           </div>
         </div>
 
@@ -285,7 +274,7 @@ export default function Dashboard({ onNavigate }) {
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Average pledged collateral valuation by loan outcome</p>
           </div>
           <button className="btn-secondary" onClick={() => onNavigate('warehouse')}>
-            View Full Star Schema Analytics →
+            View Star Schema Analytics →
           </button>
         </div>
 

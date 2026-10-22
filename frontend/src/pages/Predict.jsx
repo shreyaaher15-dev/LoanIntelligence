@@ -4,7 +4,6 @@ import {
   CheckCircle2, 
   XCircle, 
   AlertTriangle, 
-  Info, 
   ShieldCheck, 
   Sparkles,
   TrendingUp,
@@ -121,7 +120,7 @@ export default function Predict() {
       const res = await api.predictLoan(form);
       setResult(res);
     } catch (err) {
-      setError(err.message || 'Failed to generate prediction. Check API connection.');
+      setError(err.message || 'Error executing prediction model.');
     } finally {
       setLoading(false);
     }
@@ -144,13 +143,13 @@ export default function Predict() {
             Loan Approval Simulator & Risk Assessment
           </h1>
           <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-            Evaluated live through the trained Random Forest Pipeline (StandardScaler + OneHotEncoder).
+            Interactive evaluation using decision parameters calibrated against the trained Random Forest pipeline.
           </p>
         </div>
 
         {/* Quick fill presets */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 600 }}>PRESETS:</span>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 600 }}>SAMPLE PROFILES:</span>
           {presets.map(p => (
             <button
               key={p.name}
@@ -171,7 +170,7 @@ export default function Predict() {
           <form onSubmit={handleSubmit}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
               <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Calculator size={18} color="#818cf8" /> Applicant Information
+                <Calculator size={18} color="#818cf8" /> Applicant Information (Demo Form)
               </h3>
               <button
                 type="button"
@@ -192,7 +191,7 @@ export default function Predict() {
             {/* Section 1: Demographics */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '10px' }}>
-                1. Borrower Profile
+                1. Borrower Profile (DimApplicant)
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
                 <div>
@@ -240,7 +239,7 @@ export default function Predict() {
             {/* Section 2: Credit & Financials */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '10px' }}>
-                2. Credit Rating & Loan Request
+                2. Credit Rating & Loan Request (DimLoan)
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr', gap: '14px', marginBottom: '14px' }}>
                 {/* CIBIL Score Slider + Input */}
@@ -405,11 +404,11 @@ export default function Predict() {
               {loading ? (
                 <>
                   <div className="spinner" style={{ width: '18px', height: '18px' }} />
-                  Processing ML Pipeline Inference...
+                  Evaluating Model Decision...
                 </>
               ) : (
                 <>
-                  <Sparkles size={18} /> Execute Underwriting Model
+                  <Sparkles size={18} /> Execute Underwriting Decision
                 </>
               )}
             </button>
@@ -550,10 +549,10 @@ export default function Predict() {
             </div>
             <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc', marginBottom: '6px' }}>Ready for Inference</h4>
             <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', maxWidth: '340px', margin: '0 auto 20px auto' }}>
-              Fill in the applicant parameters or pick a preset, then click <strong>Execute Underwriting Model</strong> to test the pipeline.
+              Fill in applicant parameters or pick a sample profile above, then click <strong>Execute Underwriting Decision</strong> to test.
             </p>
             <div style={{ fontSize: '0.76rem', color: 'var(--text-dim)' }}>
-              Backend Model: Random Forest (Accuracy: 98.24% on Kaggle test set)
+              Model: Random Forest Classifier (Accuracy: 98.24% on Kaggle test set)
             </div>
           </div>
         )}

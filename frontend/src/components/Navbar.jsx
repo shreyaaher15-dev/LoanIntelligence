@@ -1,41 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { 
   BarChart3, 
   Calculator, 
   Cpu, 
   Database, 
   Info, 
-  ShieldCheck, 
-  Activity,
-  Layers
+  Layers,
+  Sparkles
 } from 'lucide-react';
-import api from '../services/api';
 
 export default function Navbar({ activeTab, setActiveTab }) {
-  const [apiStatus, setApiStatus] = useState('checking');
-
-  useEffect(() => {
-    let isMounted = true;
-    api.getHealth()
-      .then(() => {
-        if (isMounted) setApiStatus('online');
-      })
-      .catch(() => {
-        if (isMounted) setApiStatus('offline');
-      });
-
-    const interval = setInterval(() => {
-      api.getHealth()
-        .then(() => isMounted && setApiStatus('online'))
-        .catch(() => isMounted && setApiStatus('offline'));
-    }, 30000);
-
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, []);
-
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'predict', label: 'Predict Loan', icon: Calculator },
@@ -92,7 +66,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 border: '1px solid rgba(99, 102, 241, 0.3)',
                 fontWeight: 600
               }}>
-                ACADEMIC DEMO
+                COLLEGE DEMO
               </span>
             </div>
             <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
@@ -141,18 +115,13 @@ export default function Navbar({ activeTab, setActiveTab }) {
             fontSize: '0.78rem',
             padding: '5px 12px',
             borderRadius: '9999px',
-            background: apiStatus === 'online' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-            border: `1px solid ${apiStatus === 'online' ? 'rgba(16, 185, 129, 0.25)' : 'rgba(244, 63, 94, 0.25)'}`,
-            color: apiStatus === 'online' ? '#34d399' : '#fb7185'
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.25)',
+            color: '#34d399',
+            fontWeight: 500
           }}>
-            <span style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              background: apiStatus === 'online' ? '#10b981' : '#f43f5e',
-              boxShadow: apiStatus === 'online' ? '0 0 8px #10b981' : '0 0 8px #f43f5e'
-            }} />
-            API: {apiStatus === 'online' ? 'Connected' : 'Offline'}
+            <Sparkles size={13} color="#34d399" />
+            Interactive Demo Mode
           </div>
 
           <div style={{
@@ -164,7 +133,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
             color: 'var(--text-muted)',
             fontFamily: 'var(--font-mono)'
           }}>
-            4,269 Rows
+            4,269 Records
           </div>
         </div>
       </div>

@@ -2,16 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { 
   Database, 
   Filter, 
-  Layers, 
-  BarChart2, 
-  Table as TableIcon,
-  CheckCircle2, 
-  XCircle, 
-  RefreshCw,
   ChevronLeft,
   ChevronRight,
-  TrendingUp,
-  Download
+  CheckCircle2, 
+  XCircle,
+  Sparkles
 } from 'lucide-react';
 import api from '../services/api';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -29,8 +24,9 @@ export default function WarehouseAnalytics() {
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState([]);
   const [recordOffset, setRecordOffset] = useState(0);
+  const [totalRecords, setTotalRecords] = useState(15);
   const [loadingRecords, setLoadingRecords] = useState(false);
-  const limit = 15;
+  const limit = 5;
 
   const fetchAnalytics = () => {
     setLoading(true);
@@ -51,6 +47,7 @@ export default function WarehouseAnalytics() {
       .then(res => {
         setRecords(res.records || []);
         setRecordOffset(offset);
+        setTotalRecords(res.total_records || 15);
         setLoadingRecords(false);
       })
       .catch(err => {
@@ -92,14 +89,19 @@ export default function WarehouseAnalytics() {
           </p>
         </div>
         <div className="badge-neutral" style={{ padding: '6px 12px' }}>
-          <Database size={14} /> Star Schema (SQLite)
+          <Database size={14} /> Star Schema (SQLite OLAP)
         </div>
       </div>
 
       {/* Filter and Group By Control Bar */}
       <div className="glass-panel" style={{ padding: '18px 20px', marginBottom: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 700, color: '#f8fafc', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-          <Filter size={15} color="#818cf8" /> OLAP Slice & Dice Filters
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', fontWeight: 700, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <Filter size={15} color="#818cf8" /> Interactive OLAP Dimension Slicers
+          </div>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)' }}>
+            Filter controls simulate multi-attribute SQL WHERE clauses
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
@@ -285,7 +287,7 @@ export default function WarehouseAnalytics() {
               Fact & Dimension Joined Records Browser
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Viewing individual fact entries from <code style={{ color: '#818cf8', fontFamily: 'var(--font-mono)' }}>FactLoanApplication</code> (Records {recordOffset + 1} - {recordOffset + records.length} of 4,269)
+              Viewing sample benchmark entries from <code style={{ color: '#818cf8', fontFamily: 'var(--font-mono)' }}>FactLoanApplication</code> (Showing {recordOffset + 1} - {Math.min(recordOffset + limit, totalRecords)} of {totalRecords} records)
             </p>
           </div>
 
@@ -299,11 +301,11 @@ export default function WarehouseAnalytics() {
               <ChevronLeft size={16} /> Prev
             </button>
             <span className="mono-number" style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Page {Math.floor(recordOffset / limit) + 1}
+              Page {Math.floor(recordOffset / limit) + 1} of {Math.ceil(totalRecords / limit)}
             </span>
             <button
               className="btn-secondary"
-              disabled={recordOffset + limit >= 4269 || loadingRecords}
+              disabled={recordOffset + limit >= totalRecords || loadingRecords}
               onClick={() => fetchRecords(recordOffset + limit)}
               style={{ padding: '6px 12px' }}
             >
