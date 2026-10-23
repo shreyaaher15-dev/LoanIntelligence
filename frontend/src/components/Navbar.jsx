@@ -1,9 +1,6 @@
 import React from 'react';
 import { 
-  BarChart3, 
   Calculator, 
-  Cpu, 
-  Database, 
   Info, 
   Layers,
   Sparkles
@@ -11,11 +8,8 @@ import {
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'predict', label: 'Predict Loan', icon: Calculator },
-    { id: 'model', label: 'Model Results', icon: Cpu },
-    { id: 'warehouse', label: 'Warehouse Analytics', icon: Database },
-    { id: 'about', label: 'About & KDD', icon: Info },
+    { id: 'predict', label: 'Loan Predictor', icon: Calculator },
+    { id: 'about', label: 'About Project', icon: Info },
   ];
 
   return (
@@ -29,7 +23,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
       width: '100%'
     }}>
       <div style={{
-        maxWidth: '1320px',
+        maxWidth: '1100px',
         margin: '0 auto',
         padding: '0 20px',
         display: 'flex',
@@ -39,7 +33,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
       }}>
         {/* Brand identity */}
         <div 
-          onClick={() => setActiveTab('dashboard')}
+          onClick={() => setActiveTab('predict')}
           style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
         >
           <div style={{
@@ -66,17 +60,17 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 border: '1px solid rgba(99, 102, 241, 0.3)',
                 fontWeight: 600
               }}>
-                COLLEGE DEMO
+                STUDENT DEMO
               </span>
             </div>
             <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
-              Approval Prediction & Warehouse Analytics
+              Loan Approval Prediction
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        {/* Clean, Simple Navigation Tabs */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -88,9 +82,9 @@ export default function Navbar({ activeTab, setActiveTab }) {
                   background: isActive ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
                   color: isActive ? '#a5b4fc' : 'var(--text-muted)',
                   border: isActive ? '1px solid rgba(99, 102, 241, 0.35)' : '1px solid transparent',
-                  padding: '8px 14px',
+                  padding: '8px 16px',
                   borderRadius: '8px',
-                  fontSize: '0.88rem',
+                  fontSize: '0.9rem',
                   fontWeight: isActive ? 600 : 500,
                   cursor: 'pointer',
                   display: 'flex',
@@ -106,35 +100,21 @@ export default function Navbar({ activeTab, setActiveTab }) {
           })}
         </nav>
 
-        {/* System Badges */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.78rem',
-            padding: '5px 12px',
-            borderRadius: '9999px',
-            background: 'rgba(16, 185, 129, 0.1)',
-            border: '1px solid rgba(16, 185, 129, 0.25)',
-            color: '#34d399',
-            fontWeight: 500
-          }}>
-            <Sparkles size={13} color="#34d399" />
-            Interactive Demo Mode
-          </div>
-
-          <div style={{
-            fontSize: '0.78rem',
-            padding: '5px 12px',
-            borderRadius: '9999px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid var(--border-subtle)',
-            color: 'var(--text-muted)',
-            fontFamily: 'var(--font-mono)'
-          }}>
-            4,269 Records
-          </div>
+        {/* Status Indicator */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          fontSize: '0.78rem',
+          padding: '5px 12px',
+          borderRadius: '9999px',
+          background: 'rgba(16, 185, 129, 0.1)',
+          border: '1px solid rgba(16, 185, 129, 0.25)',
+          color: '#34d399',
+          fontWeight: 500
+        }}>
+          <Sparkles size={13} color="#34d399" />
+          Interactive Demo
         </div>
       </div>
     </header>
