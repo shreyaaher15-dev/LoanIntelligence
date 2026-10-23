@@ -8,7 +8,7 @@ import {
   TrendingUp,
   Clock,
   ShieldCheck,
-  ArrowRight
+  Scale
 } from 'lucide-react';
 import api from '../services/api';
 import DisclaimerBanner from '../components/DisclaimerBanner';
@@ -27,18 +27,15 @@ export default function Predict() {
 
   const presets = [
     {
-      label: 'Example: High Credit Prime',
-      tag: 'Approved Example',
+      label: 'Example: High Credit',
       data: { cibil_score: 780, income_annum: 1200000, loan_amount: 2500000, loan_term: 10 }
     },
     {
-      label: 'Example: Low Credit Subprime',
-      tag: 'Rejected Example',
+      label: 'Example: Low Credit',
       data: { cibil_score: 440, income_annum: 450000, loan_amount: 2200000, loan_term: 15 }
     },
     {
       label: 'Example: Moderate / Borderline',
-      tag: 'Borderline Example',
       data: { cibil_score: 610, income_annum: 700000, loan_amount: 1500000, loan_term: 8 }
     }
   ];
@@ -82,10 +79,10 @@ export default function Predict() {
   };
 
   const getCibilTier = (score) => {
-    if (score >= 750) return 'Excellent (750-900)';
-    if (score >= 650) return 'Good (650-749)';
-    if (score >= 550) return 'Fair (550-649)';
-    return 'Poor (<550)';
+    if (score >= 750) return 'Excellent (750–900)';
+    if (score >= 650) return 'Good (650–749)';
+    if (score >= 550) return 'Fair (550–649)';
+    return 'Poor (300–549)';
   };
 
   return (
@@ -110,9 +107,9 @@ export default function Predict() {
           margin: '0 auto',
           lineHeight: 1.5 
         }}>
-          Enter your credit score and financial details below to test whether your loan application is likely to be 
-          <strong style={{ color: '#34d399' }}> Approved</strong> or 
-          <strong style={{ color: '#fb7185' }}> Rejected</strong>.
+          Enter your credit score and financial details below to simulate whether your loan application may be 
+          <strong style={{ color: '#34d399' }}> Likely Approved</strong> or 
+          <strong style={{ color: '#fb7185' }}> Likely Rejected</strong>.
         </p>
 
         {/* Quick Example Clickers */}
@@ -124,7 +121,7 @@ export default function Predict() {
           marginTop: '16px',
           flexWrap: 'wrap' 
         }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 600 }}>TRY SAMPLE:</span>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontWeight: 600 }}>QUICK SAMPLES:</span>
           {presets.map(p => (
             <button
               key={p.label}
@@ -139,26 +136,26 @@ export default function Predict() {
         </div>
       </div>
 
-      {/* Prediction Section Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: result ? '1.1fr 1fr' : '1fr', gap: '24px', alignItems: 'start' }}>
+      {/* Main Form & Results Layout */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {/* Simple 4-Field Form */}
         <div className="glass-panel" style={{ padding: '26px' }}>
           <form onSubmit={handlePredict}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
               <div style={{ fontWeight: 700, fontSize: '1rem', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CreditCard size={18} color="#818cf8" />
-                Applicant Details
+                Application Parameters
               </div>
               <button
                 type="button"
                 onClick={() => { setForm(initialForm); setResult(null); }}
                 style={{ background: 'transparent', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem' }}
               >
-                <RotateCcw size={12} /> Reset
+                <RotateCcw size={12} /> Reset to defaults
               </button>
             </div>
 
-            {/* Field 1: CIBIL Score */}
+            {/* Field 1: CIBIL Score Slider + Input */}
             <div style={{ 
               background: 'rgba(255,255,255,0.02)', 
               padding: '16px', 
@@ -166,21 +163,30 @@ export default function Predict() {
               border: '1px solid var(--border-subtle)',
               marginBottom: '18px' 
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
                 <label style={{ fontSize: '0.86rem', fontWeight: 600, color: '#f8fafc' }}>
-                  1. CIBIL Credit Score
+                  1. CIBIL Credit Score (300 to 900)
                 </label>
-                <span className="mono-number" style={{
-                  fontWeight: 800,
-                  fontSize: '1.05rem',
-                  color: getCibilColor(form.cibil_score),
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}>
-                  {form.cibil_score} / 900
-                  <span style={{ fontSize: '0.72rem', fontWeight: 600, opacity: 0.85 }}>({getCibilTier(form.cibil_score)})</span>
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="mono-number" style={{
+                    fontWeight: 800,
+                    fontSize: '1.05rem',
+                    color: getCibilColor(form.cibil_score)
+                  }}>
+                    {form.cibil_score} / 900
+                  </span>
+                  <span style={{ 
+                    fontSize: '0.72rem', 
+                    fontWeight: 600, 
+                    color: getCibilColor(form.cibil_score),
+                    background: 'rgba(255,255,255,0.05)',
+                    padding: '2px 8px',
+                    borderRadius: '4px',
+                    border: '1px solid var(--border-subtle)'
+                  }}>
+                    {getCibilTier(form.cibil_score)}
+                  </span>
+                </div>
               </div>
               <input
                 type="range"
@@ -193,14 +199,20 @@ export default function Predict() {
                 style={{ width: '100%', accentColor: 'var(--accent-primary)', cursor: 'pointer', height: '6px' }}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '6px' }}>
-                <span>300 (Subprime / Poor)</span>
-                <span>650 (Standard Benchmark)</span>
-                <span>900 (Excellent)</span>
+                <span>Poor (&lt; 550)</span>
+                <span>Fair (550–649)</span>
+                <span>Good (650–749)</span>
+                <span>Excellent (750+)</span>
               </div>
             </div>
 
             {/* Field 2 & 3: Annual Income & Loan Amount */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '18px' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
+              gap: '16px', 
+              marginBottom: '18px' 
+            }}>
               <div>
                 <label style={{ display: 'block', fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px' }}>
                   2. Annual Income (₹)
@@ -242,7 +254,7 @@ export default function Predict() {
               </div>
             </div>
 
-            {/* Field 4: Loan Term */}
+            {/* Field 4: Loan Repayment Term */}
             <div style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                 <label style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-muted)' }}>
@@ -263,9 +275,9 @@ export default function Predict() {
                 style={{ width: '100%', accentColor: 'var(--accent-primary)', cursor: 'pointer', height: '6px' }}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '4px' }}>
-                <span>2 Years (Short-term)</span>
-                <span>10 Years (Medium)</span>
-                <span>20 Years (Long-term)</span>
+                <span>2 Years (Short term)</span>
+                <span>10 Years (Medium term)</span>
+                <span>20 Years (Long term)</span>
               </div>
             </div>
 
@@ -279,7 +291,7 @@ export default function Predict() {
               {loading ? (
                 <>
                   <div className="spinner" style={{ width: '18px', height: '18px' }} />
-                  Evaluating Application...
+                  Evaluating Assessment...
                 </>
               ) : (
                 <>
@@ -291,8 +303,8 @@ export default function Predict() {
           </form>
         </div>
 
-        {/* Clear Result Display */}
-        {result ? (
+        {/* Clear Result Section */}
+        {result && (
           <div className="glass-panel" style={{
             padding: '26px',
             border: result.status_type === 'approved' 
@@ -302,14 +314,14 @@ export default function Predict() {
               ? '0 12px 36px rgba(16, 185, 129, 0.15)' 
               : '0 12px 36px rgba(244, 63, 94, 0.15)'
           }}>
-            {/* Clear Result Banner */}
+            {/* 1. Clear Result Banner */}
             <div style={{
               background: result.status_type === 'approved' ? 'var(--status-approved-bg)' : 'var(--status-rejected-bg)',
               border: `1px solid ${result.status_type === 'approved' ? 'var(--status-approved-border)' : 'var(--status-rejected-border)'}`,
               borderRadius: '12px',
-              padding: '20px',
+              padding: '18px 20px',
               textAlign: 'center',
-              marginBottom: '20px'
+              marginBottom: '22px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '6px' }}>
                 {result.status_type === 'approved' ? (
@@ -323,87 +335,103 @@ export default function Predict() {
                   letterSpacing: '-0.02em',
                   color: result.status_type === 'approved' ? '#34d399' : '#fb7185'
                 }}>
-                  {result.prediction.toUpperCase()}
+                  {result.prediction}
                 </span>
               </div>
               <div style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-                Decision Benchmark: {result.status_type === 'approved' ? 'Meets Credit Criteria' : 'Elevated Default Risk'}
+                Application Evaluation: {result.status_type === 'approved' ? 'Standard Credit Criteria Met' : 'Elevated Credit & Debt Risk'}
               </div>
             </div>
 
-            {/* Brief Explanation */}
-            <div style={{ marginBottom: '18px' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px' }}>
-                Assessment Explanation
+            {/* 2. Structured Comparison Cards (CIBIL, Income Comparison, Term) */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              gap: '12px', 
+              marginBottom: '20px' 
+            }}>
+              {/* Entered CIBIL & Range */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <ShieldCheck size={14} color={getCibilColor(result.cibil_score)} />
+                  Entered CIBIL Score
+                </div>
+                <div className="mono-number" style={{ fontSize: '1.15rem', fontWeight: 800, color: getCibilColor(result.cibil_score) }}>
+                  {result.cibil_score} / 900
+                </div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '2px' }}>
+                  Range: <strong>{result.cibil_range}</strong>
+                </div>
               </div>
-              <p style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: 1.55 }}>
-                {result.explanation}
-              </p>
+
+              {/* Loan vs. Annual Income Comparison */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <Scale size={14} color="#818cf8" />
+                  Loan-to-Income Comparison
+                </div>
+                <div className="mono-number" style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f8fafc' }}>
+                  {result.loan_to_income_ratio}x Annual Income
+                </div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '2px' }}>
+                  {formatINR(result.loan_amount)} loan on {formatINR(result.income_annum)} income
+                </div>
+              </div>
+
+              {/* Selected Repayment Term */}
+              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '10px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.74rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                  <Clock size={14} color="#38bdf8" />
+                  Selected Repayment Term
+                </div>
+                <div className="mono-number" style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f8fafc' }}>
+                  {result.loan_term} Years
+                </div>
+                <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '2px' }}>
+                  {result.loan_term <= 6 ? 'Short-term horizon' : result.loan_term <= 12 ? 'Medium-term horizon' : 'Extended-term horizon'}
+                </div>
+              </div>
             </div>
 
-            {/* Key Factor Bullets */}
+            {/* 3. Short, Easy-to-Understand Summary */}
             <div style={{ 
               background: 'rgba(255,255,255,0.02)', 
-              padding: '14px', 
-              borderRadius: '8px', 
+              padding: '16px', 
+              borderRadius: '10px', 
               border: '1px solid var(--border-subtle)',
               marginBottom: '18px' 
             }}>
-              <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px' }}>
-                Key Influencing Factors
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px' }}>
+                Assessment Summary
               </div>
-              <ul style={{ paddingLeft: '18px', fontSize: '0.82rem', color: '#cbd5e1', lineHeight: 1.5 }}>
-                {result.reasons.map((r, i) => (
-                  <li key={i} style={{ marginBottom: '4px' }}>{r}</li>
+              <p style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: 1.55 }}>
+                {result.summary}
+              </p>
+            </div>
+
+            {/* 4. Key Factors */}
+            <div style={{ marginBottom: '18px' }}>
+              <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px' }}>
+                Key Contributing Points
+              </div>
+              <ul style={{ paddingLeft: '18px', fontSize: '0.84rem', color: '#cbd5e1', lineHeight: 1.55 }}>
+                {result.key_points.map((pt, i) => (
+                  <li key={i} style={{ marginBottom: '4px' }}>{pt}</li>
                 ))}
               </ul>
             </div>
 
-            {/* Metric Summary Chips */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', display: 'block' }}>Debt Multiplier</span>
-                <span className="mono-number" style={{ fontSize: '0.92rem', fontWeight: 700, color: '#f8fafc' }}>
-                  {result.loan_to_income_ratio}x Annual Income
-                </span>
-              </div>
-
-              <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', display: 'block' }}>Credit Bureau Tier</span>
-                <span style={{ fontSize: '0.92rem', fontWeight: 700, color: getCibilColor(result.cibil_score) }}>
-                  {result.cibil_band}
-                </span>
-              </div>
-            </div>
-
-            {/* Transparent Demo Notice */}
-            <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', lineHeight: 1.45, fontStyle: 'italic' }}>
-              {result.disclaimer}
-            </div>
-          </div>
-        ) : (
-          <div className="glass-panel" style={{ padding: '36px 24px', textAlign: 'center', border: '1px dashed var(--border-subtle)' }}>
-            <div style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '12px',
-              background: 'rgba(99, 102, 241, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 16px auto',
-              color: '#818cf8'
+            {/* Footnote */}
+            <div style={{ 
+              padding: '10px 14px', 
+              borderRadius: '8px', 
+              background: 'rgba(255,255,255,0.02)', 
+              border: '1px solid var(--border-subtle)',
+              fontSize: '0.75rem', 
+              color: 'var(--text-dim)', 
+              lineHeight: 1.45 
             }}>
-              <ShieldCheck size={28} />
-            </div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f8fafc', marginBottom: '8px' }}>
-              Instant Assessment Ready
-            </h3>
-            <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', maxWidth: '300px', margin: '0 auto 18px auto', lineHeight: 1.5 }}>
-              Adjust the 4 parameters or pick an example profile, then click <strong>Predict Loan Approval</strong> to see the result.
-            </p>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-dim)' }}>
-              Evaluates CIBIL credit tier, loan-to-income multiplier, and repayment horizon.
+              <strong>Demo Disclaimer:</strong> This prediction is an educational simulation based on decision rules derived from Kaggle loan approval data. It runs directly in your browser and does not connect to a live banking system.
             </div>
           </div>
         )}

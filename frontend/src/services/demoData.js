@@ -1,5 +1,5 @@
 /**
- * Client-Side Prediction Engine & Demo Data for College Project Showcase.
+ * Client-Side Prediction Engine & Demo Information for College Project Showcase.
  * Simulates loan approval decisions based on benchmarks derived from the Kaggle Loan Approval dataset.
  */
 
@@ -9,78 +9,78 @@ export function simulatePrediction({ cibil_score, income_annum, loan_amount, loa
   const loan = Number(loan_amount || 1);
   const term = Number(loan_term || 10);
 
-  const loanToIncome = Number((loan / (income > 0 ? income : 1)).toFixed(2));
+  const ratio = Number((loan / (income > 0 ? income : 1)).toFixed(2));
 
-  let cibilBand = "Poor (<550)";
-  if (cibil >= 750) cibilBand = "Excellent (750+)";
-  else if (cibil >= 650) cibilBand = "Good (650-749)";
-  else if (cibil >= 550) cibilBand = "Fair (550-649)";
+  let cibilRange = "Poor (300–549)";
+  if (cibil >= 750) cibilRange = "Excellent (750–900)";
+  else if (cibil >= 650) cibilRange = "Good (650–749)";
+  else if (cibil >= 550) cibilRange = "Fair (550–649)";
 
   let isApproved = false;
-  let explanation = "";
-  let reasons = [];
+  let summary = "";
+  let keyPoints = [];
 
   if (cibil >= 750) {
-    if (loanToIncome > 6.0 && term > 15) {
+    if (ratio > 6.0 && term > 15) {
       isApproved = false;
-      explanation = "Although your credit score is excellent, the requested loan amount is more than 6x your annual income over a very long tenure (15+ years), leading to a high debt exposure.";
-      reasons = [
-        "Excellent credit score (750+), indicating strong past creditworthiness.",
-        `High Loan-to-Income ratio (${loanToIncome}x): requested borrowing exceeds typical guidelines.`,
-        `Long tenure (${term} years) increases long-term risk.`
+      summary = "Even with an excellent credit score, borrowing more than 6 times your annual income across an extended 15+ year repayment tenure creates heavy long-term debt exposure.";
+      keyPoints = [
+        `Credit score (${cibil}) is in the top tier, showing reliable past credit history.`,
+        `Requested loan amount is high relative to income (${ratio}x annual earnings).`,
+        `Long tenure (${term} years) increases long-term interest liability.`
       ];
     } else {
       isApproved = true;
-      explanation = `Your CIBIL score of ${cibil} is in the prime credit tier (750+), and your loan-to-income ratio of ${loanToIncome}x is well within safe borrowing guidelines.`;
-      reasons = [
-        `High CIBIL score (${cibil}/900): excellent credit history with very low default risk.`,
-        `Balanced Loan-to-Income ratio of ${loanToIncome}x annual earnings.`,
-        `${term}-year repayment term fits the requested loan size.`
+      summary = `Your CIBIL score is in the excellent range (750–900) and your requested loan amount is within safe debt-to-income limits. Applications with these parameters have the strongest approval likelihood.`;
+      keyPoints = [
+        `Strong CIBIL score (${cibil}) indicates minimal default risk.`,
+        `Loan amount is ${ratio}x your annual income, which is well within standard borrowing benchmarks.`,
+        `${term}-year repayment term is well-proportioned to the loan size.`
       ];
     }
   } else if (cibil >= 650) {
-    if (loanToIncome > 5.0) {
+    if (ratio > 5.0) {
       isApproved = false;
-      explanation = `Your CIBIL score of ${cibil} is good, but the requested loan is ${loanToIncome}x your annual income, which exceeds recommended borrowing thresholds.`;
-      reasons = [
-        `Good CIBIL score (${cibil}/900) indicates consistent past credit performance.`,
-        `Elevated debt-to-income multiple (${loanToIncome}x): recommended limit is typically 4x to 5x.`,
-        "Higher leverage relative to annual income increases borrower risk."
+      summary = `While your CIBIL score meets the standard credit benchmark (650+), the requested loan exceeds 5 times your annual income, which typically triggers rejection due to debt service limits.`;
+      keyPoints = [
+        `Credit score (${cibil}) is satisfactory (650–749 range).`,
+        `High borrowing multiplier (${ratio}x annual income) exceeds the recommended 4x–5x ceiling.`,
+        `Lowering the loan amount or increasing annual income would strengthen the application.`
       ];
     } else {
       isApproved = true;
-      explanation = `Your CIBIL score of ${cibil} meets the standard credit benchmark, and your requested loan amount (${loanToIncome}x income) is manageable.`;
-      reasons = [
-        `CIBIL score (${cibil}) is safely above the 650 benchmark.`,
-        `Healthy loan-to-income multiplier (${loanToIncome}x).`,
-        `Appropriate ${term}-year repayment horizon.`
+      summary = `Your CIBIL score is above the typical 650 benchmark, and the loan amount is proportionate to your annual earnings (${ratio}x). This profile meets standard lending criteria.`;
+      keyPoints = [
+        `Credit score (${cibil}) is above the 650 approval threshold.`,
+        `Loan is ${ratio}x your annual income, maintaining healthy affordability.`,
+        `${term}-year term provides manageable installments.`
       ];
     }
   } else if (cibil >= 550) {
-    if (loanToIncome <= 3.0 && term <= 10) {
+    if (ratio <= 3.0 && term <= 10) {
       isApproved = true;
-      explanation = `Your CIBIL score of ${cibil} is in the moderate range, but your modest borrowing request (${loanToIncome}x annual income) and shorter term (${term} years) keep risk low.`;
-      reasons = [
-        `Moderate credit score (${cibil}/900) requires cautious underwriting.`,
-        `Low loan multiplier (${loanToIncome}x annual income) significantly strengthens your application.`,
-        `Shorter term (${term} years) reduces repayment risk.`
+      summary = `Your CIBIL score is in the moderate range (550–649), but a modest loan request (${ratio}x annual income) and a shorter repayment term (${term} years) help mitigate the risk.`;
+      keyPoints = [
+        `Moderate credit rating (${cibil}) requires conservative borrowing.`,
+        `Low loan multiplier (${ratio}x income) keeps debt obligations manageable.`,
+        `Shorter term (${term} years) reduces overall risk exposure.`
       ];
     } else {
       isApproved = false;
-      explanation = `Your CIBIL score of ${cibil} is in the borderline range (550-649), and the requested loan amount (${loanToIncome}x income) is too high for this credit profile.`;
-      reasons = [
-        `CIBIL credit rating (${cibil}) is below the preferred 650 benchmark.`,
-        `Loan-to-income multiple (${loanToIncome}x) is high for a borderline credit profile.`,
-        "Historical data indicates higher rejection likelihood at this score level."
+      summary = `With a fair/borderline credit score (550–649), requesting ${ratio}x your annual income over a ${term}-year period exceeds conservative risk guidelines.`;
+      keyPoints = [
+        `Credit score (${cibil}) is below the preferred 650 threshold.`,
+        `Loan amount (${ratio}x annual income) is elevated for a borderline credit profile.`,
+        `Higher default probability based on benchmark criteria.`
       ];
     }
   } else {
     isApproved = false;
-    explanation = `Your CIBIL score of ${cibil} is in the subprime range (< 550). In historical credit benchmarks, scores below 550 are the primary reason for loan rejections.`;
-    reasons = [
-      `CIBIL score (${cibil}/900) is below the minimum 550 underwriting benchmark.`,
-      "Subprime credit rating is the primary driver for automated rejection.",
-      "Improving your credit score above 650 before applying is strongly recommended."
+    summary = `Your CIBIL score falls in the poor/subprime range (below 550). In benchmark lending rules, scores in this tier are the primary cause for loan rejection.`;
+    keyPoints = [
+      `CIBIL score (${cibil}) is below the minimum 550 underwriting benchmark.`,
+      `Past credit history is the primary barrier to approval.`,
+      `Improving credit score above 650 is recommended before applying.`
     ];
   }
 
@@ -88,39 +88,12 @@ export function simulatePrediction({ cibil_score, income_annum, loan_amount, loa
     prediction: isApproved ? "Likely Approved" : "Likely Rejected",
     status_type: isApproved ? "approved" : "rejected",
     cibil_score: cibil,
-    cibil_band: cibilBand,
+    cibil_range: cibilRange,
     income_annum: income,
     loan_amount: loan,
     loan_term: term,
-    loan_to_income_ratio: loanToIncome,
-    explanation,
-    reasons,
-    disclaimer: "College Demo Notice: This prediction is an educational simulation based on decision rules derived from Kaggle loan approval data. It runs directly in the browser for demonstration purposes."
+    loan_to_income_ratio: ratio,
+    summary,
+    key_points: keyPoints
   };
 }
-
-export const DEMO_ABOUT_INFO = {
-  project_title: "Loan Approval Prediction",
-  sub_title: "Student Mini-Project Demonstration",
-  description: "An academic project exploring machine learning and data mining techniques to predict loan application outcomes based on borrower financial and credit profiles.",
-  dataset: {
-    source: "Kaggle Loan Approval Prediction Dataset",
-    records: "4,269 historical applications",
-    attributes: "CIBIL credit score, annual income, loan amount, and tenure",
-    license: "Open Academic Use (CC BY-NC-SA 4.0)"
-  },
-  key_insights: [
-    {
-      title: "CIBIL Score is the #1 Factor",
-      desc: "Applicants with a credit score above 650 have an approval rate exceeding 98%, while those below 550 are predominantly rejected."
-    },
-    {
-      title: "Debt-to-Income Leverage",
-      desc: "Borrowers whose requested loan exceeds 5x their annual earnings face increased rejection risk, even with fair credit."
-    },
-    {
-      title: "Loan Tenure Impact",
-      desc: "Shorter repayment horizons (2 to 6 years) demonstrate higher approval probabilities compared to extended 15-20 year terms."
-    }
-  ]
-};
